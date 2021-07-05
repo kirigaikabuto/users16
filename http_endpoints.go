@@ -107,22 +107,6 @@ func (u *usersHttpEndpoints) Register() func(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-func (u *usersHttpEndpoints) GetInfo() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		contextUserId := r.Context().Value("user_id")
-		userId := contextUserId.(string)
-		user, err := u.usersStore.Get(userId)
-		if err != nil {
-			respondJSON(w, http.StatusInternalServerError, ErrorMessage{
-				Message: err.Error(),
-				Status:  http.StatusInternalServerError,
-			})
-			return
-		}
-		respondJSON(w, http.StatusOK, user)
-	}
-}
-
 type ErrorMessage struct {
 	Message string `json:"message"`
 	Status  int    `json:"status"`
