@@ -11,7 +11,6 @@ import (
 
 type UsersHttpEndpoints interface {
 	Login() func(w http.ResponseWriter, r *http.Request)
-	GetInfo() func(w http.ResponseWriter, r *http.Request)
 	Register() func(w http.ResponseWriter, r *http.Request)
 }
 
