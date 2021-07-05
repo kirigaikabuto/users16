@@ -11,6 +11,7 @@ import (
 
 type UsersHttpEndpoints interface {
 	Login() func(w http.ResponseWriter, r *http.Request)
+	GetInfo() func(w http.ResponseWriter, r *http.Request)
 	Register() func(w http.ResponseWriter, r *http.Request)
 }
 
@@ -103,6 +104,22 @@ func (u *usersHttpEndpoints) Register() func(w http.ResponseWriter, r *http.Requ
 			Password: cmd.Password,
 		})
 		respondJSON(w, http.StatusCreated, user)
+	}
+}
+
+func (u *usersHttpEndpoints) GetInfo() func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		contextUserId := r.Context().Value("user_id")
+		userId := contextUserId.(string)
+		user, err := u.usersStore.Get(userId)
+		if err != nil {
+			respondJSON(w, http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+				Status:  http.StatusInternalServerError,
+			})
+			return
+		}
+		respondJSON(w, http.StatusOK, user)
 	}
 }
 
